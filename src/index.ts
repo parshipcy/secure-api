@@ -1,11 +1,15 @@
 import express, {Express, Request, Response} from "express"
 import {config} from "dotenv"
 import cors from "cors"
+import dbConnect from "./utils/db"
 
 const app: Express = express()
 
 config()
 const port = process.env.PORT || 8080
+
+// connect db
+dbConnect()
 
 //middlewares
 app.use(cors({
