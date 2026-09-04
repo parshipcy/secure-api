@@ -2,6 +2,7 @@ import express, {Express, Request, Response} from "express"
 import {config} from "dotenv"
 import cors from "cors"
 import dbConnect from "./utils/db"
+import { routes } from "./routes"
 
 const app: Express = express()
 
@@ -16,6 +17,9 @@ app.use(cors({
     origin: process.env.HOST_URL || "*"
 }))
 
+app.use("/api", routes)
+
+//endpoints
 app.get("/", (req: Request, res: Response) => {
     res.json({ success: true, message: "Hello world"})
 })
