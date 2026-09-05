@@ -17,6 +17,9 @@ app.use(cors({
     origin: process.env.HOST_URL || "*"
 }))
 
+// prepare the request first, then send it to the route.
+app.use(express.json())
+
 app.use("/api", routes)
 
 //endpoints
