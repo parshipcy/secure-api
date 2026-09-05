@@ -12,7 +12,7 @@ const port = process.env.PORT || 8080
 // connect db
 dbConnect()
 
-//middlewares
+//middlewares - runs in the order you register it
 app.use(cors({
     origin: process.env.HOST_URL || "*"
 }))
