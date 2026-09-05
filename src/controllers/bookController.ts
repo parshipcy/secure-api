@@ -15,11 +15,11 @@ export const addBook = async(req: Request, res: Response) => {
     const { name, author, publishYear, description } = req.body
 
     try {
-        const book = Book.create({
+        const book = await Book.create({
             name, author, publishYear, description
         })
 
-        return res.status(201).json({success: true, message: "book added"} as MyResponse)
+        return res.status(201).json({success: true, message: "book added", data: book} as MyResponse)
     } catch(error: any) {
         return res.status(500).json({ success: false, message: error.message} as MyResponse)
     }
