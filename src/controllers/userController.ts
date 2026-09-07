@@ -21,8 +21,8 @@ export const signup = async (req: Request, res: Response) => {
         user = await User.create({
             name, email, phone, username, password, role
         })
-        return res.status(201).json({success: true, message: "Signup successfull", data: user} as MyResponse)
 
+        return res.status(201).json({success: true, message: "Signup successfull", data: user} as MyResponse)
 
     } catch(error: any) {
         return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)

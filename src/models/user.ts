@@ -19,7 +19,8 @@ export const userSchema = new Schema<MyUser>({
     email: {
         type: String,
         trim: true,
-        required: true
+        required: true,
+        unique: true
     },
     phone: {
         type: Number,
