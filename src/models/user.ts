@@ -1,6 +1,7 @@
 import mongoose, { model, Schema } from "mongoose"
 
 export interface MyUser {
+    _id?: string,
     name: string,
     email: string,
     phone: number,

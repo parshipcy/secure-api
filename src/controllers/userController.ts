@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { MyResponse } from "./bookController"
 import { MyUser, User } from "../models/user"
 import bcrypt from "bcrypt"
+import jwt, { Secret } from "jsonwebtoken"
 
 export const signup = async (req: Request, res: Response) => {
     const { name, email, phone, username, password, role } = req.body
@@ -53,9 +54,18 @@ export const login = async(req: Request, res: Response) => {
         //using a generic message to prevent attackers from discovering whether an email exists
         const ok = await bcrypt.compare(password, user.password) //compare the submitted password to the stored hash from signup (user.password)
         if(!ok) return res.status(400).json({ success: false, message: "Wrong email or password", data: null })
+
+        //jwt integration
+        const payload = {
+            id: user._id,
+            role: user.role
+        }
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET as Secret, {
+            expiresIn: "30min"
+        })
         
-        //else
-        return res.status(200).json({ success: true, message: "login successfull", data: { email, username, password }} as MyResponse)
+        return res.status(200).cookie("token", token).json({ success: true, message: "login successfull", data: { email, username, password }} as MyResponse)
     } catch(error: any){
         return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)
     }
