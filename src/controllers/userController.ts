@@ -31,3 +31,32 @@ export const signup = async (req: Request, res: Response) => {
         return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)
     }
 }
+
+export const login = async(req: Request, res: Response) => {
+    const { email, username, password } = req.body
+
+    try {
+        if((!email && !username) || !password) {
+            return res.status(500).json({ success: false, message: "Please provide email or username, and a password", data: null} as MyResponse)
+        }
+
+        //find the user
+        let user: MyUser | null
+        user = await User.findOne({ email })
+
+        //if not user then signup
+        if(!user){
+            return res.status(400).json({ success: false, message: "Please signup", data: null} as MyResponse)
+        }
+
+        //password checking
+        //using a generic message to prevent attackers from discovering whether an email exists
+        const ok = await bcrypt.compare(password, user.password) //compare the submitted password to the stored hash from signup (user.password)
+        if(!ok) return res.status(400).json({ success: false, message: "Wrong email or password", data: null })
+        
+        //else
+        return res.status(200).json({ success: true, message: "login successfull", data: { email, username, password }} as MyResponse)
+    } catch(error: any){
+        return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)
+    }
+}
