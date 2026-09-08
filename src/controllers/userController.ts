@@ -1,11 +1,14 @@
 import { Request, Response } from "express"
 import { MyResponse } from "./bookController"
 import { MyUser, User } from "../models/user"
+import bcrypt from "bcrypt"
 
 export const signup = async (req: Request, res: Response) => {
     const { name, email, phone, username, password, role } = req.body
 
     try {
+        const secure =await bcrypt.hash(password, 10)
+
         if(!name || !email || !phone || !username || !password || !role) {
             return res.status(400).json({success:false, message: "Please fill all the required details", data: null})
         }
@@ -19,7 +22,7 @@ export const signup = async (req: Request, res: Response) => {
 
         //if user is null
         user = await User.create({
-            name, email, phone, username, password, role
+            name, email, phone, username, password:secure, role
         })
 
         return res.status(201).json({success: true, message: "Signup successfull", data: user} as MyResponse)
