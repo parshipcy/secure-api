@@ -4,6 +4,11 @@ import { MyUser, User } from "../models/user"
 import bcrypt from "bcrypt"
 import jwt, { Secret } from "jsonwebtoken"
 
+const createToken = (user: { _id?: string; role: string }) =>
+    jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET as Secret, {
+        expiresIn: "30min"
+    })
+
 export const signup = async (req: Request, res: Response) => {
     const { name, email, phone, username, password, role } = req.body
 
@@ -26,7 +31,8 @@ export const signup = async (req: Request, res: Response) => {
             name, email, phone, username, password:secure, role
         })
 
-        return res.status(201).json({success: true, message: "Signup successfull", data: user} as MyResponse)
+        const token = createToken(user)
+        return res.status(201).cookie("token", token).json({success: true, message: "Signup successfull", data: user} as MyResponse)
 
     } catch(error: any) {
         return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)
@@ -55,16 +61,7 @@ export const login = async(req: Request, res: Response) => {
         const ok = await bcrypt.compare(password, user.password) //compare the submitted password to the stored hash from signup (user.password)
         if(!ok) return res.status(400).json({ success: false, message: "Wrong email or password", data: null })
 
-        //jwt integration
-        const payload = {
-            id: user._id,
-            role: user.role
-        }
-
-        const token = jwt.sign(payload, process.env.JWT_SECRET as Secret, {
-            expiresIn: "30min"
-        })
-        
+        const token = createToken(user)
         return res.status(200).cookie("token", token).json({ success: true, message: "login successfull", data: { email, username, password }} as MyResponse)
     } catch(error: any){
         return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)
