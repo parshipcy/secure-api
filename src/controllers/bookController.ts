@@ -53,6 +53,8 @@ export const updateBook = async(req: Request, res: Response) => {
 }
 
 export const deleteBook = async(req: Request, res: Response) => {
+    if(req.role !== Roles.creator && req.role !== Roles.admin) return res.status(401).json({ success: false, message: "Access denied", data: req.role } as MyResponse)
+
     const { id } = req.params
 
     try {
