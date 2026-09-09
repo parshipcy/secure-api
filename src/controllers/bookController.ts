@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import { Book } from "../models/book"
+import { Roles } from "../utils/roles"
 
 export interface MyResponse {
     success: boolean,
@@ -19,6 +20,8 @@ export const getBook = async (req: Request, res: Response) => {
 }
 
 export const addBook = async(req: Request, res: Response) => {
+    if(req.role !== Roles.creator && req.role !== Roles.admin) return res.status(401).json({ success: false, message: "Access denied", data: req.role } as MyResponse)
+
     const { name, author, publishYear, description } = req.body
 
     try {
@@ -33,6 +36,8 @@ export const addBook = async(req: Request, res: Response) => {
 }
 
 export const updateBook = async(req: Request, res: Response) => {
+    if(req.role !== Roles.creator && req.role !== Roles.admin) return res.status(401).json({ success: false, message: "Access denied", data: req.role } as MyResponse)
+
     const { id } = req.params
 
     const { name, author, publishYear, description } = req.body
