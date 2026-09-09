@@ -70,3 +70,11 @@ export const login = async(req: Request, res: Response) => {
         return res.status(500).json({ success: false, message: error.message, data: null} as MyResponse)
     }
 }
+
+export const logout = async(req: Request, res: Response) => {
+    try {
+        return res.status(200).clearCookie("token").json({ success: true, message: "Logout successfull", data: null} as MyResponse)
+    } catch(error: any){
+        return res.status(500).json({ success: false, message: "Can't able to logout", data: null} as MyResponse)
+    }
+}
