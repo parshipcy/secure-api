@@ -8,3 +8,5 @@ Express + TypeScript API with JWT auth, cookie sessions, and role-based manageme
 - `GET /api/user/logout` clears the cookie
 
 ![Tested with Postman](https://img.shields.io/badge/Tested%20with-Postman-FF6C37?logo=postman&logoColor=white)
+
+<img src="assets/Screenshot 2026-09-10 203057.png" alt="Postman collection for secure-api">
